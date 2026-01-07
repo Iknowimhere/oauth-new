@@ -3,6 +3,11 @@ require("dotenv").config();
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
+const callbackURL =
+  process.env.NODE_ENV === "production"
+    ? "https://oauth-new.onrender.com/auth/google/callback"
+    : "http://localhost:3000/auth/google/callback";
+
 passport.serializeUser((user, done) => {
   done(null, user); // store minimal user
 });
@@ -16,7 +21,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
+      callbackURL: callbackURL,
     },
     async (accessToken, refreshToken, profile, done) => {
       // 🔑 OAuth identity only
